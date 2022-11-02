@@ -2,6 +2,7 @@ package ge.ufc.webservices.model;
 import com.sun.xml.ws.client.BindingProviderProperties;
 import ge.ufc.webservices.*;
 
+import ge.ufc.webservices.InternalError;
 import jakarta.xml.ws.Binding;
 import jakarta.xml.ws.BindingProvider;
 import jakarta.xml.ws.handler.MessageContext;

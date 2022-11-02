@@ -1,5 +1,7 @@
 package ge.ufc.webservices.dao;
 
+import ge.ufc.webservices.DatabaseException;
+import ge.ufc.webservices.DatabaseException_Exception;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,19 +17,19 @@ public class DatabaseManager {
 
     private static final String MOVIE_TOMCAT_DS = "java:comp/env/jdbc/agentDs";
 
-    public static Connection getDatabaseConnection() throws DatabaseException {
+    public static Connection getDatabaseConnection() throws ge.ufc.webservices.dao.DatabaseException {
         return getConnection();
     }
 
 
-    private static Connection getConnection() throws DatabaseException {
+    private static Connection getConnection() throws  ge.ufc.webservices.dao.DatabaseException {
         try {
             DataSource ds = getDataSource(MOVIE_TOMCAT_DS);
             return ds.getConnection();
         } catch (NamingException e) {
-            throw new DatabaseException("Unable to find datasource", e);
+            throw new ge.ufc.webservices.dao.DatabaseException("Database exception",e);
         } catch (SQLException e) {
-            throw new DatabaseException("Unable to connect to the database", e);
+            throw new ge.ufc.webservices.dao.DatabaseException("Unable to connect database",e);
         }
     }
 

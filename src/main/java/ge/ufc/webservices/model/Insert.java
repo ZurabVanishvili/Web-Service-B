@@ -14,7 +14,7 @@ public class Insert implements InsertDao {
 
 
     @Override
-    public int fill(String pay_id, int user_id, double amount, int trans_id, int code, int status) throws SQLException {
+    public int fill(String pay_id, int user_id, double amount, int trans_id, int code, int status)  {
         String sql = "insert into payments(pay_id,user_id,amount,transaction_id,request_time,response_time,code,status)" +
                 "values(?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
@@ -30,6 +30,9 @@ public class Insert implements InsertDao {
             ps.execute();
 
             return 1;
+        }catch (SQLException e){
+            e.printStackTrace();
         }
+        return 0;
     }
 }

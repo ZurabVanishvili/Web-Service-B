@@ -1,5 +1,8 @@
 package ge.ufc.webservices.ws;
 
+import ge.ufc.webservices.*;
+import ge.ufc.webservices.dao.DatabaseException;
+
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -17,7 +20,7 @@ public interface AgentService {
     @Path("/fillBalance")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    Response fillBalance(String jsonString) throws SQLException;
+    Response fillBalance(String jsonString) throws SQLException, AgentAccessDenied_Exception, UserNotFound_Exception, DuplicateFault_Exception, AgentAuthFailed_Exception, AmountNotPositive_Exception, DatabaseException_Exception, DatabaseException;
 //
 //
 //    @POST

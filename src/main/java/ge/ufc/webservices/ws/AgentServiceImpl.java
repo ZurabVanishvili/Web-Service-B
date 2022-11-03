@@ -6,12 +6,14 @@ import ge.ufc.webservices.dao.DatabaseManager;
 import ge.ufc.webservices.model.*;
 import ge.ufc.webservices.model.User;
 
+import ge.ufc.webservices.util.Utilities;
 import jakarta.xml.ws.WebServiceException;
 import org.json.JSONObject;
 
 import javax.ws.rs.core.Response;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 
 public class AgentServiceImpl implements AgentService {
@@ -34,7 +36,7 @@ public class AgentServiceImpl implements AgentService {
     }
 
     @Override
-    public Response fillBalance(String jsonString) {
+    public Response fillBalance(String jsonString) throws SQLException, AgentAccessDenied_Exception, UserNotFound_Exception, DuplicateFault_Exception, AgentAuthFailed_Exception, AmountNotPositive_Exception, DatabaseException_Exception, DatabaseException {
 
         UserService u = new UserServiceImpl();
 
@@ -45,7 +47,6 @@ public class AgentServiceImpl implements AgentService {
         String trans_id = null;
         int user_id = 0;
         double amount = 0;
-
         int sys_id = 0;
         try {
             connection = DatabaseManager.getDatabaseConnection();
@@ -53,22 +54,31 @@ public class AgentServiceImpl implements AgentService {
             trans_id = jsonObject.getString("agent_transaction_id");
             user_id = jsonObject.getInt("user_id");
             amount = jsonObject.getDouble("amount");
+//
+//            if ( returnPayId> 0) {
+//                return Response.status(Response.Status.OK).entity(returnPayId).build();
+//            }
+
             sys_id = u.fillBalance(trans_id, user_id, amount);
             insert.fill(trans_id, user_id, amount, sys_id, 200, 0);
+            int returnPayId = Utilities.checkPayment(trans_id, user_id, amount);
 
-            return Response.status(Response.Status.OK).entity(sys_id).build();
+            return Response.status(Response.Status.OK).entity(returnPayId).build();
 
 
-        } catch (InternalError_Exception|WebServiceException  e) {
+        } catch (InternalError_Exception | WebServiceException e) {
             insert.fill(trans_id, user_id, amount, sys_id, 500, 1);
             return Response.status(Response.Status.REQUEST_TIMEOUT).entity("Internal error").build();
 
         } catch (DuplicateFault_Exception e) {
-            insert.fill(trans_id, user_id, amount, sys_id, 409, 2);
-            return Response.status(Response.Status.CONFLICT).entity("Duplicate Fault").build();
+//            insert.fill(trans_id, user_id, amount, sys_id, 409, 2);
+//            return Response.status(Response.Status.CONFLICT).entity("Duplicate Fault").build();
+            int returnPayId = Utilities.checkPayment(trans_id, user_id, amount);
 
-        } catch (DatabaseException | DatabaseException_Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.OK).entity(returnPayId).build();
+
+        } catch (DatabaseException | DatabaseException_Exception|SQLException e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e).build();
 
         } catch (AmountNotPositive_Exception e) {
             insert.fill(trans_id, user_id, amount, sys_id, 400, 2);

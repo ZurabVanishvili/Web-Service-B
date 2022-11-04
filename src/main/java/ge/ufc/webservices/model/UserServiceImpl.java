@@ -1,19 +1,17 @@
 package ge.ufc.webservices.model;
+
 import com.sun.xml.ws.client.BindingProviderProperties;
 import ge.ufc.webservices.*;
 
-import ge.ufc.webservices.InternalError;
 import jakarta.xml.ws.Binding;
 import jakarta.xml.ws.BindingProvider;
 import jakarta.xml.ws.handler.MessageContext;
 
-import java.net.SocketTimeoutException;
 import java.util.*;
 
 
 public class UserServiceImpl implements UserService {
     private static UserServiceWSImpl userServiceWS;
-
 
 
     static {
@@ -32,7 +30,7 @@ public class UserServiceImpl implements UserService {
 
         headers.put("agent_id", Collections.singletonList(agent.getId()));
         headers.put("password", Collections.singletonList(agent.getPassword()));
-        bindingProvider.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS,headers);
+        bindingProvider.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, headers);
 
         Binding binding = bindingProvider.getBinding();
         var handlerList = binding.getHandlerChain();
@@ -48,14 +46,15 @@ public class UserServiceImpl implements UserService {
     public User getUser(int id) throws AgentAccessDenied_Exception, UserNotFound_Exception, AgentAuthFailed_Exception, DatabaseException_Exception {
         try {
             User user = new User();
-            user.setBalance(userServiceWS.getUser(id).getBalance());
-            user.setFullName(userServiceWS.getUser(id).getFullName());
-            user.setFirstname(userServiceWS.getUser(id).getFirstname());
-            user.setLastname(userServiceWS.getUser(id).getLastname());
-            user.setP_number(userServiceWS.getUser(id).getPNumber());
+            ge.ufc.webservices.User user1 = userServiceWS.getUser(id);
+            user.setBalance(user1.getBalance());
+            user.setFullName(user1.getFullName());
+            user.setFirstname(user1.getFirstname());
+            user.setLastname(user1.getLastname());
+            user.setP_number(user1.getPNumber());
             return user;
         } catch (AgentAccessDenied_Exception | UserNotFound_Exception | AgentAuthFailed_Exception | DatabaseException_Exception e) {
-           throw  e;
+            throw e;
         }
 
     }
@@ -63,14 +62,13 @@ public class UserServiceImpl implements UserService {
     @Override
     public int fillBalance(String trans_id, int user_id, double amount) throws AgentAccessDenied_Exception, UserNotFound_Exception, DuplicateFault_Exception, AgentAuthFailed_Exception, AmountNotPositive_Exception, DatabaseException_Exception {
         try {
-            return userServiceWS.pay(trans_id,user_id,amount);
+            return userServiceWS.pay(trans_id, user_id, amount);
         } catch (AgentAccessDenied_Exception | UserNotFound_Exception | DuplicateFault_Exception | AgentAuthFailed_Exception | AmountNotPositive_Exception | DatabaseException_Exception e) {
             throw e;
 
         }
 
     }
-
 
 
 }

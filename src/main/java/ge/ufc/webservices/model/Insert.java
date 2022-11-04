@@ -15,7 +15,7 @@ public class Insert implements InsertDao {
 
     @Override
     public int fill(String pay_id, int user_id, double amount, int trans_id, int code, int status)  {
-        String sql = "insert into payments(pay_id,user_id,amount,transaction_id,request_time,response_time,code,status)" +
+        String sql = "insert into payments(pay_id,user_id,amount,sys_transaction_id,request_time,response_time,code,status)" +
                 "values(?,?,?,?,?,?,?,?)";
         try (PreparedStatement ps = connection.prepareStatement(sql)) {
             ps.setString(1, pay_id);

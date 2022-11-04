@@ -20,7 +20,7 @@ public interface AgentService {
     @Path("/fillBalance")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    Response fillBalance(String jsonString) throws SQLException, AgentAccessDenied_Exception, UserNotFound_Exception, DuplicateFault_Exception, AgentAuthFailed_Exception, AmountNotPositive_Exception, DatabaseException_Exception, DatabaseException;
+    Response fillBalance(String jsonString) throws SQLException, AgentAccessDenied_Exception, UserNotFound_Exception, DuplicateFault_Exception, AgentAuthFailed_Exception, AmountNotPositive_Exception, DatabaseException_Exception, DatabaseException, TransactionNotFound_Exception;
 //
 //
 //    @POST

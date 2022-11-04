@@ -16,6 +16,7 @@ import javax.ws.rs.core.Response;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.util.Date;
 
 
 public class AgentServiceImpl implements AgentService {
@@ -73,8 +74,14 @@ public class AgentServiceImpl implements AgentService {
             return Response.status(Response.Status.OK).entity(convertUsingGson(json)).build();
 
 
+        } catch (WebServiceException e) {
+            assert insert != null;
+            insert.fill(trans_id, user_id, 0, sys_id, 408, 1);
+            code = Utilities.checkPayment(trans_id, user_id, amount);
+            return Response.status(Response.Status.REQUEST_TIMEOUT).entity(code).build();
+
         } catch (InternalError_Exception |
-                WebServiceException | DatabaseException_Exception | DatabaseException e) {
+                DatabaseException_Exception | DatabaseException e) {
             assert insert != null;
             insert.fill(trans_id, user_id, 0, sys_id, 500, 1);
             code = Utilities.checkPayment(trans_id, user_id, amount);
@@ -94,8 +101,8 @@ public class AgentServiceImpl implements AgentService {
 
         }
     }
-    public static String convertUsingGson(ReturnJsonClass e)
-    {
+
+    public static String convertUsingGson(ReturnJsonClass e) {
         Gson gson = new Gson();
         return gson.toJson(e);
     }

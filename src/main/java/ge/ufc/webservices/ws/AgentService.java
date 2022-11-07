@@ -21,16 +21,6 @@ public interface AgentService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     Response fillBalance(String jsonString) throws SQLException, AgentAccessDenied_Exception, UserNotFound_Exception, DuplicateFault_Exception, AgentAuthFailed_Exception, AmountNotPositive_Exception, DatabaseException_Exception, DatabaseException, TransactionNotFound_Exception;
-//
-//
-//    @POST
-//    @Path("/fill")
-//    @Consumes(MediaType.APPLICATION_JSON)
-//    @Produces(MediaType.APPLICATION_JSON)
-//    Response fill(String jsonString);
 
-    @GET
-    @Path("/quartz")
-    Response quartz();
 
 }

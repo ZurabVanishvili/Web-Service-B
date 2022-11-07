@@ -171,25 +171,7 @@ public class AgentServiceImpl implements AgentService {
         }
     }
 
-    @Override
-    public Response quartz() {
-        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
 
-        try {
-            Scheduler scheduler = schedulerFactory.getScheduler();
-
-            JobDetail jobA = JobBuilder.newJob(PaymentsRetry.class).withIdentity("jobA", "group2")
-                    .build();
-            Trigger triggerA = TriggerBuilder.newTrigger().withIdentity("triggerA", "group2").startNow()
-                    .build();
-            scheduler.scheduleJob(jobA, triggerA);
-            scheduler.start();
-
-        } catch (SchedulerException e) {
-            e.printStackTrace();
-        }
-        return Response.status(Response.Status.OK).entity("json").build();
-    }
 
     public static String convertUsingGson(ReturnJsonClass e) {
         Gson gson = new Gson();

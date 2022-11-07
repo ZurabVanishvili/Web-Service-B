@@ -1,6 +1,5 @@
 package ge.ufc.webservices.ws;
 
-import com.google.gson.Gson;
 import org.codehaus.jackson.map.annotate.JsonSerialize;
 
 @JsonSerialize

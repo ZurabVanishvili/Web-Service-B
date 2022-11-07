@@ -2,5 +2,5 @@ package ge.ufc.webservices.model;
 
 public interface InsertDao {
 
-    int fill(String pay_id, int user_id, double amount, int trans_id, int code, int status);
+    String fill(String pay_id, int user_id, double amount, int trans_id, int code, int status);
 }

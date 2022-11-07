@@ -63,6 +63,7 @@ public class Validation {
     }
 
     public void fillSetting(Properties props) {
+        lgg.info("Getting agent info");
         agent = new Agent();
         agent.setId(props.getProperty("id",""));
         agent.setPassword(props.getProperty("password",""));

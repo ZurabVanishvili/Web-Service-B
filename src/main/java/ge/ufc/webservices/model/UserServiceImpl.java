@@ -6,11 +6,15 @@ import ge.ufc.webservices.*;
 import jakarta.xml.ws.Binding;
 import jakarta.xml.ws.BindingProvider;
 import jakarta.xml.ws.handler.MessageContext;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.util.*;
 
 
 public class UserServiceImpl implements UserService {
+    private static final Logger lgg = LogManager.getLogger();
+
     private static UserServiceWSImpl userServiceWS;
 
 
@@ -31,6 +35,7 @@ public class UserServiceImpl implements UserService {
         headers.put("agent_id", Collections.singletonList(agent.getId()));
         headers.put("password", Collections.singletonList(agent.getPassword()));
         bindingProvider.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, headers);
+        lgg.trace("Headers: "+headers);
 
         Binding binding = bindingProvider.getBinding();
         var handlerList = binding.getHandlerChain();

@@ -29,5 +29,8 @@ public interface AgentService {
 //    @Produces(MediaType.APPLICATION_JSON)
 //    Response fill(String jsonString);
 
+    @GET
+    @Path("/quartz")
+    Response quartz();
 
 }

@@ -1,7 +1,5 @@
 package ge.ufc.webservices.dao;
 
-import ge.ufc.webservices.DatabaseException;
-import ge.ufc.webservices.DatabaseException_Exception;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,7 +13,7 @@ import java.sql.SQLException;
 public class DatabaseManager {
     private static final Logger logger = LogManager.getLogger();
 
-    private static final String MOVIE_TOMCAT_DS = "java:comp/env/jdbc/agentDs";
+    private static final String AGENT_DS = "java:comp/env/jdbc/agentDs";
 
     public static Connection getDatabaseConnection() throws ge.ufc.webservices.dao.DatabaseException {
         return getConnection();
@@ -24,7 +22,7 @@ public class DatabaseManager {
 
     private static Connection getConnection() throws  ge.ufc.webservices.dao.DatabaseException {
         try {
-            DataSource ds = getDataSource(MOVIE_TOMCAT_DS);
+            DataSource ds = getDataSource(AGENT_DS);
             return ds.getConnection();
         } catch (NamingException e) {
             throw new ge.ufc.webservices.dao.DatabaseException("Database exception",e);

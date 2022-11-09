@@ -27,28 +27,28 @@ public class AgentServiceImpl implements AgentService {
     private static final Logger lgg = LogManager.getLogger();
 
     static {
-//        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
-//        try {
-//            Scheduler scheduler = schedulerFactory.getScheduler();
-//            JobDetail jobA = JobBuilder.newJob(PaymentsRetry.class).withIdentity("jobA").build();
-//            Trigger triggerA = TriggerBuilder.newTrigger().withIdentity("jobA").startNow()
-//                    .withPriority(15)
-//                    .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(30).repeatForever())
-//                    .build();
-//
-//            scheduler.scheduleJob(jobA, triggerA);
-//            scheduler.start();
-//        } catch (SchedulerException e) {
-//            lgg.error(e);
-
-
         SchedulerFactory schedulerFactory = new StdSchedulerFactory();
         try {
             Scheduler scheduler = schedulerFactory.getScheduler();
+            JobDetail jobA = JobBuilder.newJob(PaymentsRetry.class).withIdentity("jobA").build();
+            Trigger triggerA = TriggerBuilder.newTrigger().withIdentity("jobA").startNow()
+                    .withPriority(15)
+                    .withSchedule(SimpleScheduleBuilder.simpleSchedule().withIntervalInSeconds(30).repeatForever())
+                    .build();
+
+            scheduler.scheduleJob(jobA, triggerA);
             scheduler.start();
         } catch (SchedulerException e) {
-            e.printStackTrace();
+            lgg.error(e);
         }
+
+//        SchedulerFactory schedulerFactory = new StdSchedulerFactory();
+//        try {
+//            Scheduler scheduler = schedulerFactory.getScheduler();
+//            scheduler.start();
+//        } catch (SchedulerException e) {
+//            e.printStackTrace();
+//        }
 
     }
 
@@ -92,7 +92,7 @@ public class AgentServiceImpl implements AgentService {
         int user_id = 0;
         double amount = 0;
         int sys_id = 0;
-        int code;
+        int code = 0;
         try {
             lgg.info("Deserializing Json String");
             connection = DatabaseManager.getDatabaseConnection();
@@ -110,7 +110,7 @@ public class AgentServiceImpl implements AgentService {
                     return Response.status(check).entity(convertUsingGson(json)).build();
                 }
             } catch (TransactionNotFound_Exception ignored) {
-
+//                აქ ვცადო სტატუსით შემოწმება
             }
 
             // აქ უკვე ახალი ტრანზაქციაა და ვამატებ როგორც transaction ისე payments ცხრილებში, თუ
@@ -133,6 +133,7 @@ public class AgentServiceImpl implements AgentService {
             return Response.status(Response.Status.OK).entity(convertUsingGson(json)).build();
 
 
+
             //ქვემოთ კი ყველა exception-ზე შესაბამის insert-ს ვაკეთებ payments-ში
             //და ვაბრუნებ code ველს.
         } catch (WebServiceException e) {
@@ -145,7 +146,7 @@ public class AgentServiceImpl implements AgentService {
                 DatabaseException_Exception | DatabaseException e) {
             lgg.error("Connection Problem. " + e);
             assert insert != null;
-            insert.fill(trans_id, user_id, 0, sys_id, 500, 1);
+            insert.fill(trans_id, user_id, amount, sys_id, 500, 1);
             code = Utilities.checkPayment(trans_id, user_id, amount);
 
             return Response.status(Response.Status.REQUEST_TIMEOUT).entity(code).build();

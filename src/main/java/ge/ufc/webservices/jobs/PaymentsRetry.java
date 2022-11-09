@@ -9,6 +9,7 @@ import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
+import org.quartz.JobExecutionException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -20,7 +21,7 @@ public class PaymentsRetry implements Job {
     private static final Logger lgg = LogManager.getLogger();
 
     @Override
-    public void execute(JobExecutionContext jobExecutionContext) {
+    public void execute(JobExecutionContext jobExecutionContext)throws JobExecutionException {
         try {
             lgg.debug("Opening connection");
             Connection connection = DatabaseManager.getDatabaseConnection();
@@ -49,7 +50,7 @@ public class PaymentsRetry implements Job {
                             ps2.setInt(1, 0);
                             ps2.setInt(2, 200);
                             ps2.setDouble(3, amount);
-                            ps2.setInt(4, sys_id);
+                            ps2.setString(4, String.valueOf(sys_id));
                             ps2.setString(5, pay_id);
 
                             ps2.executeUpdate();

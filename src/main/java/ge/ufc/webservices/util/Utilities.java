@@ -59,25 +59,30 @@ public class Utilities {
                 lgg.info("Validated request.Transaction found");
                 switch (status) {
                     case 1:
-                       userService = new UserServiceImpl();
+                        userService = new UserServiceImpl();
                         int sys_id = userService.fillBalance(pay_id,user_id,amount);
 
-                        if (sys_id > 0)
+                        if (sys_id > 0 ) {
 
-                        ps2.setInt(1, 0);
-                        ps2.setInt(2, 200);
+                            ps2.setInt(1, 0);
+                            ps2.setInt(2, 200);
+
+                        } else {
+                            ps2.setInt(1, 2);
+                            ps2.setInt(2, 400);
+                        }
                         ps2.setDouble(3, amount);
-                        ps2.setInt(4,sys_id);
+                        ps2.setInt(4, sys_id);
                         ps2.setString(5, agent_trans_id);
-
-
                         ps2.executeUpdate();
+
                         lgg.info("Updated status value");
                         lgg.trace(payment_sys_id);
                         return payment_sys_id;
 
                     case 2:
                     case 0: {
+
                         lgg.info("Code: " + code);
 
                         return code;

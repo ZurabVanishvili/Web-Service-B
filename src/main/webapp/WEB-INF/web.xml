@@ -4,9 +4,7 @@
 <web-app>
 
     <display-name>Web-Service-B</display-name>
-    <listener>
-        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
-    </listener>
+
 
     <context-param>
         <param-name>resteasy.resources</param-name>
@@ -18,6 +16,7 @@
     </context-param>
     <listener>
 <!--        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>-->
+        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
 
         <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
     </listener>

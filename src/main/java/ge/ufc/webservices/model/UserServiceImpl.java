@@ -3,12 +3,16 @@ package ge.ufc.webservices.model;
 import com.sun.xml.ws.client.BindingProviderProperties;
 import ge.ufc.webservices.*;
 
+import ge.ufc.webservices.dao.DatabaseException;
+import ge.ufc.webservices.util.Utilities;
 import jakarta.xml.ws.Binding;
 import jakarta.xml.ws.BindingProvider;
 import jakarta.xml.ws.handler.MessageContext;
+import jdk.jshell.execution.Util;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.sql.SQLException;
 import java.util.*;
 
 
@@ -35,7 +39,7 @@ public class UserServiceImpl implements UserService {
         headers.put("agent_id", Collections.singletonList(agent.getId()));
         headers.put("password", Collections.singletonList(agent.getPassword()));
         bindingProvider.getRequestContext().put(MessageContext.HTTP_REQUEST_HEADERS, headers);
-        lgg.trace("Headers: "+headers);
+        lgg.trace("Headers: " + headers);
 
         Binding binding = bindingProvider.getBinding();
         var handlerList = binding.getHandlerChain();
@@ -65,10 +69,14 @@ public class UserServiceImpl implements UserService {
     }
 
     @Override
-    public int fillBalance(String trans_id, int user_id, double amount) throws AgentAccessDenied_Exception, UserNotFound_Exception, DuplicateFault_Exception, AgentAuthFailed_Exception, AmountNotPositive_Exception, DatabaseException_Exception {
+    public int fillBalance(String trans_id, int user_id, double amount) throws AgentAccessDenied_Exception, UserNotFound_Exception, DuplicateFault_Exception, AgentAuthFailed_Exception, AmountNotPositive_Exception, DatabaseException_Exception, SQLException {
         try {
+
             return userServiceWS.pay(trans_id, user_id, amount);
+
+
         } catch (AgentAccessDenied_Exception | UserNotFound_Exception | DuplicateFault_Exception | AgentAuthFailed_Exception | AmountNotPositive_Exception | DatabaseException_Exception e) {
+            lgg.error(e.getMessage());
             throw e;
 
         }

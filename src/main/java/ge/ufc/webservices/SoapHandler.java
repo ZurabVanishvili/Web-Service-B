@@ -91,9 +91,8 @@ public class SoapHandler implements SOAPHandler<SOAPMessageContext> {
             StreamResult result = new StreamResult(new StringWriter());
             DOMSource source = new DOMSource(d);
             transformer.transform(source, result);
-            String resultString = result.getWriter().toString();
 
-            return resultString;
+            return result.getWriter().toString();
         } catch (Exception e) {
             logger.error(e.getMessage(), e);
             return xmlString;

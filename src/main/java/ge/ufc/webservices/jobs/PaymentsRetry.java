@@ -10,7 +10,6 @@ import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
-
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -20,23 +19,32 @@ public class PaymentsRetry implements Job {
 
     private static final Logger lgg = LogManager.getLogger();
 
+
     @Override
-    public void execute(JobExecutionContext jobExecutionContext)throws JobExecutionException {
+    public void execute(JobExecutionContext jobExecutionContext) throws JobExecutionException {
+
+
         try {
             lgg.debug("Opening connection");
-            Connection connection = DatabaseManager.getDatabaseConnection();
+            Connection connection;
+            connection = DatabaseManager.getDatabaseConnection();
+
             String sql = "select status,pay_id,user_id,amount from payments";
             String sql2 = "update payments set status =?,code = ?,amount = ?, sys_transaction_id = ? where pay_id = ? ";
 
             try (PreparedStatement ps = connection.prepareStatement(sql);
                  PreparedStatement ps2 = connection.prepareStatement(sql2)) {
                 try (ResultSet rs = ps.executeQuery()) {
-                    if (rs.next()) {
+
+                    while (rs.next()) {
+
                         int status = rs.getInt("status");
                         String pay_id = rs.getString("pay_id");
                         int user_id = rs.getInt("user_id");
                         double amount = rs.getDouble("amount");
                         lgg.info("Searching for status value 1");
+
+
                         if (status == 1) {
                             lgg.info("Found status with value 1");
 
@@ -50,23 +58,24 @@ public class PaymentsRetry implements Job {
                             ps2.setInt(1, 0);
                             ps2.setInt(2, 200);
                             ps2.setDouble(3, amount);
-                            ps2.setString(4, String.valueOf(sys_id));
+                            ps2.setInt(4, (sys_id));
                             ps2.setString(5, pay_id);
 
                             ps2.executeUpdate();
+                            lgg.info("Updated");
                         }
                     }
                 } catch (InternalError_Exception | AgentAccessDenied_Exception | UserNotFound_Exception | DuplicateFault_Exception | AgentAuthFailed_Exception | AmountNotPositive_Exception | DatabaseException_Exception e) {
-                    lgg.error(e);
-                    e.printStackTrace();
+                    lgg.error(e.getMessage());
+
                 }
                 lgg.info("Finished");
             }
 
 
         } catch (DatabaseException | SQLException e) {
-            lgg.error(e);
-            e.printStackTrace();
+            lgg.error(e.getMessage());
+
         }
 
     }

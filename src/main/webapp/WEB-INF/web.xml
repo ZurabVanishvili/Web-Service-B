@@ -2,10 +2,7 @@
         "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
         "http://java.sun.com/dtd/web-app_2_3.dtd" >
 <web-app>
-
     <display-name>Web-Service-B</display-name>
-
-
     <context-param>
         <param-name>resteasy.resources</param-name>
         <param-value>ge.ufc.webservices.ws.AgentServiceImpl</param-value>
@@ -15,10 +12,10 @@
         <param-value>/</param-value>
     </context-param>
     <listener>
-<!--        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>-->
-        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
-
         <listener-class>org.jboss.resteasy.plugins.server.servlet.ResteasyBootstrap</listener-class>
+    </listener>
+    <listener>
+        <listener-class>org.quartz.ee.servlet.QuartzInitializerListener</listener-class>
     </listener>
     <servlet>
         <servlet-name>resteasy-servlet</servlet-name>

@@ -24,3 +24,8 @@
 ![image](https://user-images.githubusercontent.com/92596077/201203838-3988f8ae-9b59-4203-b3a6-9a2dacb0afa2.png)
 
 ![image](https://user-images.githubusercontent.com/92596077/201203890-84278929-b991-49e7-b481-6c17a9ef6504.png)
+
+
+#Payments_Table
+-----------------
+![image](https://user-images.githubusercontent.com/92596077/201204311-a72062a3-918c-4f53-ba75-d4944d59699e.png)

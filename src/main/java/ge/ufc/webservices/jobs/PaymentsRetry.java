@@ -10,6 +10,7 @@ import org.apache.logging.log4j.Logger;
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
 import org.quartz.JobExecutionException;
+
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -29,7 +30,7 @@ public class PaymentsRetry implements Job {
             Connection connection;
             connection = DatabaseManager.getDatabaseConnection();
 
-            String sql = "select status,pay_id,user_id,amount from payments";
+            String sql = "select status,pay_id,user_id,amount from payments where status = 1";
             String sql2 = "update payments set status =?,code = ?,amount = ?, sys_transaction_id = ? where pay_id = ? ";
 
             try (PreparedStatement ps = connection.prepareStatement(sql);
@@ -38,34 +39,33 @@ public class PaymentsRetry implements Job {
 
                     while (rs.next()) {
 
-                        int status = rs.getInt("status");
                         String pay_id = rs.getString("pay_id");
                         int user_id = rs.getInt("user_id");
                         double amount = rs.getDouble("amount");
-                        lgg.info("Searching for status value 1");
 
 
-                        if (status == 1) {
-                            lgg.info("Found status with value 1");
+                        lgg.info("Found status with value 1");
 
-                            UserService userService = new UserServiceImpl();
-                            int sys_id = userService.fillBalance(pay_id, user_id, amount);
+                        UserService userService = new UserServiceImpl();
+                        int sys_id = userService.fillBalance(pay_id, user_id, amount);
 
-                            if (sys_id > 0)
-                                lgg.info("Updating code and status columns");
+                        if (sys_id > 0)
+                            lgg.info("Updating code and status columns");
 
 
-                            ps2.setInt(1, 0);
-                            ps2.setInt(2, 200);
-                            ps2.setDouble(3, amount);
-                            ps2.setInt(4, (sys_id));
-                            ps2.setString(5, pay_id);
+                        ps2.setInt(1, 0);
+                        ps2.setInt(2, 200);
+                        ps2.setDouble(3, amount);
+                        ps2.setInt(4, (sys_id));
+                        ps2.setString(5, pay_id);
 
-                            ps2.executeUpdate();
-                            lgg.info("Updated");
-                        }
+                        ps2.executeUpdate();
+                        lgg.info("Updated");
+
                     }
-                } catch (InternalError_Exception | AgentAccessDenied_Exception | UserNotFound_Exception | DuplicateFault_Exception | AgentAuthFailed_Exception | AmountNotPositive_Exception | DatabaseException_Exception e) {
+                } catch (InternalError_Exception | AgentAccessDenied_Exception | UserNotFound_Exception |
+                         DuplicateFault_Exception | AgentAuthFailed_Exception | AmountNotPositive_Exception |
+                         DatabaseException_Exception e) {
                     lgg.error(e.getMessage());
 
                 }

@@ -1,2 +1,2 @@
-Web-Service-B (Jax-RS, Client of Web-Service-A)
+Web-Service-B (Jax-RS)
 --------------------------------
